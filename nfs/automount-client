@@ -3,13 +3,24 @@
   hosts: nfs_clients
   become: yes
   tasks:
-  # To automate the mount of the shared files
+  # Step 1: Install autofs
     - name: Install autofs
       ansible.builtin.dnf:
         name:
           - autofs
         state: present
+  # Step 2: Add a master map file to /etc/auto.master.d
     - name: Create the extra.autofs file
       ansible.builtin.copy:
         dest: /etc/auto.master.d/extra.autofs
         content: "/shared /etc/auto.shared --timeout=60"
+  # Step 3: Create the mapping files
+    - name: Create the auto.shared file
+      ansible.builtin.copy:
+        dest: /etc/auto.shared
+        content: "shared -rw,soft,intr nfs-server:/shared"
+  # Step 4: Restart the autofs service
+    - name: Restart the autofs service
+      ansible.builtin.systemd:
+        name: autofs
+        state: restarted

@@ -127,5 +127,7 @@ mount -a
 ![Automount benefits](screens/automount.png)
 ![Steps](screens/steps-of-automount.png)
 ![Steps](screens/steps-of-automount2.png)
+![Direct map](screens/directmap.png)
+![Indirect map](screens/indirectmap.png)
 
 
