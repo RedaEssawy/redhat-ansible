@@ -1,0 +1,12 @@
+---
+- name: Install nfs-utils on client and servera machines
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install nfs
+      ansible.builtin.dnf:
+        name:
+          - nfs-utils
+        state: present
+
+      

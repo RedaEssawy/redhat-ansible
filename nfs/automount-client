@@ -1,0 +1,15 @@
+---
+- name: Automate the mount on the client machines
+  hosts: nfs_clients
+  become: yes
+  tasks:
+  # To automate the mount of the shared files
+    - name: Install autofs
+      ansible.builtin.dnf:
+        name:
+          - autofs
+        state: present
+    - name: Create the extra.autofs file
+      ansible.builtin.copy:
+        dest: /etc/auto.master.d/extra.autofs
+        content: "/shared /etc/auto.shared --timeout=60"

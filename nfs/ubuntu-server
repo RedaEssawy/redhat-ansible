@@ -1,0 +1,47 @@
+---
+- name: Configure the Ubuntu as a server
+  hosts: local
+  become: yes
+  tasks:
+  # to use showmount command
+    - name: install nfs 
+      ansible.builtin.apt:  
+        name:
+          - nfs-common
+        state: present
+    
+    - name: install nfs-kernel-server to exportfs files
+      ansible.builtin.apt:
+        name:
+          - nfs-kernel-server
+        state: present
+    - name: Define the shared files in /etc/exports file
+      ansible.builtin.copy:
+        dest: /etc/exports
+        src: exports
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Export nfs share
+      ansible.builtin.command: exportfs -r
+    
+    # Add nfs server to firewall rules
+    # - name: Allow nfs server through firewall
+    #   ansible.builtin.command: firewall-cmd --permanent --add-service=nfs
+
+    # - name: Allow rpc-bind through firewall
+    #   ansible.builtin.command: firewall-cmd --permanent --add-service=rpc-bind
+    
+    # - name: Allow mountd through firewall
+    #   ansible.builtin.command: firewall-cmd --permanent --add-service=mountd
+
+    # - name: Reload firewall to apply changes
+    #   ansible.builtin.command: firewall-cmd --reload
+
+    # Or you can stop firewall temporarily as it may block nfs traffic
+    - name: stop firewall
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: no
+        

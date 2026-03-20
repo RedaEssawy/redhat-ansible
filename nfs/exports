@@ -1,0 +1,8 @@
+/media/reda/part3 *(rw,no_subtree_check)
+
+
+# no_root_squash: This option allows the root user on the client machine to have root privileges on the NFS server. By default, NFS squashes the root user to a non-privileged user for security reasons. With no_root_squash, the root user on the client can access files on the NFS server with full permissions.
+# /dir  190.142.86/24(rw)
+# /dir  190.142.86/24(ro) read-only
+# /dir  (hostname)(rw,sync,no_root_squash) read-write, synchronous, no root squashing
+# /dir  *.iti.com(ro,sync,no_root_squash) read-only, synchronous, no root squashing

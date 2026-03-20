@@ -1,0 +1,33 @@
+---
+- name: start nfs server
+  hosts: nfs_servers
+  become: yes
+  tasks:
+  # to start and enable nfs server
+    - name: start nfs server
+      ansible.builtin.service:
+        name: nfs-server
+        state: started
+    - name: enable nfs server
+      ansible.builtin.service:
+        name: nfs-server
+        enabled: yes
+    # to stop firewall as it may block nfs traffic
+    - name: Stop firewall
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: no
+    # to export nfs share to clients in this case we are sharing /root/users-emails directory to all clients with read-write permissions
+    - name: export nfs share
+      ansible.builtin.copy:
+        dest: /etc/exports
+        src: exports
+        owner: root
+        group: root
+        mode: '0644'
+    
+    - name: Export nfs share
+      ansible.builtin.command: exportfs -f
+  
+    
