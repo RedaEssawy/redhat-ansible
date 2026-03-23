@@ -124,6 +124,63 @@ mount -a
 
 
 3. On demand method
+## Steps:
+1. Install autofs package:
+```bash
+sudo dnf install autofs
+```
+2. Tow steps:
+-  Add master map file under /etc/auto.master.d
+```bash
+# the file name is demo.autofs the .autofs extension is mendatory.
+
+vim /etc/auto.master.d/demo.autofs
+```
+- Add the master map entry in the previous created file, in this case, for indirectly mapped mounts:
+```bash
+# /share: base directory
+# /etc/auto.demo: the map file that you will put on it all  your mount datials(mount point, mount options, or source location) (auto.demo: any name for your file) 
+/share /etc/auto.demo
+```
+3. Create the mapping files.
+```bash
+vim /etc/auto.demo
+```
+The mapping file-naming convention is /etc/auto.name. where name reflects the content of the map
+```bash
+work -rw,sync serverb:/shares/work
+```
+4. Start and enable the automounter service.
+```bash
+sudo systemctl enable --now autofs
+```
+# Direct maps:
+## To use directly mapped mount points, the master map file shold appears as follows:
+```bash
+/- /etc/auto.direct
+
+# All direct map entries use /- as the base directory in this case. the mapping file that contains the mount details is `/etc/auto.direct`.
+
+```
+## The content for the /etc/auto.direct file might appears as follows:
+```bash
+/mnt/docs -rw,sync serverb:/shares/docs
+```
+ The mount point (or key) is always an absolute path. the rest of the mapping file uses the same structure.
+In this example the /mnt directory exists, and it is not managed by autofs. the full directory /mnt/docs will be created and removed automatically by the autofs service.
+
+# Indirect Willcard Maps:
+## Is more dynamic.
+## The content for the /etc/auto.demo file might appears as follows:
+```bash
+* -rw,sync serverb:/shares/&
+```
+The mout point (or key) > *
+The source location is > &
+Everything is the same.
+
+
+
 ![Automount benefits](screens/automount.png)
 ![Steps](screens/steps-of-automount.png)
 ![Steps](screens/steps-of-automount2.png)
